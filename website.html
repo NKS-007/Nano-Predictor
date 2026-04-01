@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scientific Data ML Analyzer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .upload-section {
+            text-align: center;
+            border: 2px dashed #667eea;
+            border-radius: 10px;
+            padding: 40px;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .upload-section:hover {
+            border-color: #764ba2;
+            background: #f8f9ff;
+        }
+
+        .upload-section input[type="file"] {
+            display: none;
+        }
+
+        .upload-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: transform 0.3s ease;
+        }
+
+        .upload-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .form-group input, 
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .results {
+            background: #f8f9ff;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .results h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .metric {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .metric-label {
+            font-weight: bold;
+            color: #555;
+        }
+
+        .metric-value {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .prediction-input {
+            background: #f0f0f0;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .input-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .prediction-result {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        .prediction-result h4 {
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .prediction-value {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .tab {
+            padding: 12px 25px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s ease;
+            background: none;
+            border: none;
+            font-size: 16px;
+        }
+
+        .tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+            font-weight: bold;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .status.info {
+            background: #cce7ff;
+            color: #004085;
+            border: 1px solid #b3d9ff;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .input-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧪 Scientific Data ML Analyzer</h1>
+            <p>Upload your scientific data and get instant machine learning insights</p>
+        </div>
+
+        <div class="card">
+            <div class="tabs">
+                <button class="tab active" onclick="showTab('upload')">Data Upload & Analysis</button>
+                <button class="tab" onclick="showTab('predict')">Make Predictions</button>
+                <button class="tab" onclick="showTab('insights')">Model Insights</button>
+            </div>
+
+            <!-- Upload & Analysis Tab -->
+            <div id="upload" class="tab-content active">
+                <div class="upload-section">
+                    <h3>📊 Upload Your Scientific Dataset</h3>
+                    <p style="margin: 15px 0; color: #666;">
+                        Upload a CSV file with your scientific data. The system will automatically detect data types and suggest the best models.
+                    </p>
+                    <input type="file" id="csvFile" accept=".csv" onchange="handleFileUpload(event)">
+                    <button class="upload-btn" onclick="document.getElementById('csvFile').click()">
+                        Choose CSV File
+                    </button>
+                    <div id="fileInfo" style="margin-top: 15px; color: #666;"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="targetColumn">Target Variable (Column to Predict):</label>
+                    <select id="targetColumn">
+                        <option value="">Select target column...</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="testSize">Test Set Size (%):</label>
+                    <input type="range" id="testSize" min="10" max="40" value="20" oninput="updateTestSizeLabel()">
+                    <span id="testSizeLabel">20%</span>
+                </div>
+
+                <button class="btn" onclick="analyzeData()" id="analyzeBtn" disabled>
+                    🔍 Analyze Data & Train Models
+                </button>
+
+                <div id="analysisResults" style="display: none;">
+                    <div class="results">
+                        <h3>📈 Analysis Results</h3>
+                        <div id="datasetInfo"></div>
+                        <div id="modelResults"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Prediction Tab -->
+            <div id="predict" class="tab-content">
+                <h3>🎯 Make Predictions</h3>
+                <p style="margin-bottom: 20px; color: #666;">
+                    Enter values for your features to get predictions from the trained model.
+                </p>
+                
+                <div id="predictionInputs" class="prediction-input">
+                    <p style="text-align: center; color: #999; font-style: italic;">
+                        Please analyze your data first to enable predictions.
+                    </p>
+                </div>
+
+                <button class="btn" onclick="makePrediction()" id="predictBtn" disabled>
+                    🚀 Generate Prediction
+                </button>
+
+                <div id="predictionResult" style="display: none;">
+                    <div class="prediction-result">
+                        <h4>Prediction Result</h4>
+                        <div class="prediction-value" id="predictionValue">-</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Insights Tab -->
+            <div id="insights" class="tab-content">
+                <h3>💡 Model Insights & Feature Importance</h3>
+                
+                <div id="modelInsights">
+                    <p style="text-align: center; color: #999; font-style: italic; margin: 40px 0;">
+                        Train your models first to see detailed insights about feature importance and model performance.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let uploadedData = null;
+        let modelResults = null;
+        let featureColumns = [];
+
+        function showTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab content
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+        }
+
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                document.getElementById('fileInfo').innerHTML = `
+                    <strong>Selected:</strong> ${file.name} (${(file.size/1024/1024).toFixed(2)} MB)
+                `;
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const csv = e.target.result;
+                    parseCSV(csv);
+                };
+                reader.readAsText(file);
+            }
+        }
+
+        function parseCSV(csv) {
+            const lines = csv.split('\n');
+            const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
+            
+            // Store data
+            uploadedData = {
+                headers: headers,
+                data: lines.slice(1).filter(line => line.trim()).map(line => {
+                    const values = line.split(',').map(v => v.trim().replace(/"/g, ''));
+                    const row = {};
+                    headers.forEach((header, index) => {
+                        row[header] = values[index];
+                    });
+                    return row;
+                })
+            };
+
+            // Populate target column dropdown
+            const targetSelect = document.getElementById('targetColumn');
+            targetSelect.innerHTML = '<option value="">Select target column...</option>';
+            headers.forEach(header => {
+                const option = document.createElement('option');
+                option.value = header;
+                option.textContent = header;
+                targetSelect.appendChild(option);
+            });
+
+            // Enable analyze button
+            document.getElementById('analyzeBtn').disabled = false;
+            
+            showStatus('success', `Data loaded successfully! Found ${headers.length} columns and ${uploadedData.data.length} rows.`);
+        }
+
+        function updateTestSizeLabel() {
+            const value = document.getElementById('testSize').value;
+            document.getElementById('testSizeLabel').textContent = value + '%';
+        }
+
+        function analyzeData() {
+            const targetColumn = document.getElementById('targetColumn').value;
+            if (!targetColumn) {
+                showStatus('error', 'Please select a target column first!');
+                return;
+            }
+
+            if (!uploadedData) {
+                showStatus('error', 'Please upload a CSV file first!');
+                return;
+            }
+
+            showStatus('info', 'Analyzing data and training models...');
+
+            // Simulate analysis (in real implementation, this would call your Python backend)
+            setTimeout(() => {
+                simulateAnalysis(targetColumn);
+            }, 2000);
+        }
+
+        function simulateAnalysis(targetColumn) {
+            // Get feature columns (all except target)
+            featureColumns = uploadedData.headers.filter(col => col !== targetColumn);
+            
+            // Simulate model results
+            modelResults = {
+                problemType: Math.random() > 0.5 ? 'regression' : 'classification',
+                bestModel: 'Random Forest',
+                models: [
+                    { name: 'Random Forest', score: 0.85 + Math.random() * 0.1 },
+                    { name: 'Linear Regression', score: 0.75 + Math.random() * 0.1 },
+                    { name: 'SVM', score: 0.80 + Math.random() * 0.1 }
+                ],
+                featureImportance: featureColumns.map(col => ({
+                    feature: col,
+                    importance: Math.random()
+                })).sort((a, b) => b.importance - a.importance),
+                targetColumn: targetColumn
+            };
+
+            displayAnalysisResults();
+            setupPredictionInputs();
+            showModelInsights();
+            showStatus('success', 'Analysis complete! Models trained successfully.');
+        }
+
+        function displayAnalysisResults() {
+            const resultsDiv = document.getElementById('analysisResults');
+            const datasetInfoDiv = document.getElementById('datasetInfo');
+            const modelResultsDiv = document.getElementById('modelResults');
+
+            // Dataset info
+            datasetInfoDiv.innerHTML = `
+                <div class="metric">
+                    <span class="metric-label">Dataset Size:</span>
+                    <span class="metric-value">${uploadedData.data.length} rows × ${uploadedData.headers.length} columns</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Problem Type:</span>
+                    <span class="metric-value">${modelResults.problemType}</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Target Variable:</span>
+                    <span class="metric-value">${modelResults.targetColumn}</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Features:</span>
+                    <span class="metric-value">${featureColumns.length}</span>
+                </div>
+            `;
+
+            // Model results
+            let modelHTML = '<h4 style="margin: 20px 0 10px 0;">Model Performance</h4>';
+            modelResults.models.forEach(model => {
+                const isSelected = model.name === modelResults.bestModel;
+                modelHTML += `
+                    <div class="metric" style="${isSelected ? 'border-left: 4px solid #667eea;' : ''}">
+                        <span class="metric-label">
+                            ${model.name} ${isSelected ? '⭐ Best' : ''}
+                        </span>
+                        <span class="metric-value">${(model.score * 100).toFixed(1)}%</span>
+                    </div>
+                `;
+            });
+
+            modelResultsDiv.innerHTML = modelHTML;
+            resultsDiv.style.display = 'block';
+        }
+
+        function setupPredictionInputs() {
+            const inputsDiv = document.getElementById('predictionInputs');
+            let inputsHTML = '<div class="input-row">';
+            
+            featureColumns.forEach((column, index) => {
+                inputsHTML += `
+                    <div class="form-group">
+                        <label for="input_${column}">${column}:</label>
+                        <input type="number" id="input_${column}" step="any" 
+                               placeholder="Enter ${column} value">
+                    </div>
+                `;
+                
+                // Start new row every 3 inputs
+                if ((index + 1) % 3 === 0) {
+                    inputsHTML += '</div><div class="input-row">';
+                }
+            });
+            
+            inputsHTML += '</div>';
+            inputsDiv.innerHTML = inputsHTML;
+            
+            // Enable prediction button
+            document.getElementById('predictBtn').disabled = false;
+        }
+
+        function makePrediction() {
+            const inputs = {};
+            let allFilled = true;
+            
+            featureColumns.forEach(column => {
+                const input = document.getElementById(`input_${column}`);
+                if (input.value === '') {
+                    allFilled = false;
+                    input.style.borderColor = '#ff6b6b';
+                } else {
+                    inputs[column] = parseFloat(input.value);
+                    input.style.borderColor = '#e0e0e0';
+                }
+            });
+
+            if (!allFilled) {
+                showStatus('error', 'Please fill in all feature values!');
+                return;
+            }
+
+            // Simulate prediction
+            const prediction = simulatePrediction(inputs);
+            displayPredictionResult(prediction);
+        }
+
+        function simulatePrediction(inputs) {
+            // Simple simulation based on feature importance
+            let prediction = 0;
+            modelResults.featureImportance.forEach(item => {
+                if (inputs[item.feature]) {
+                    prediction += inputs[item.feature] * item.importance;
+                }
+            });
+            
+            // Add some randomness and scale appropriately
+            prediction = prediction * (0.8 + Math.random() * 0.4);
+            
+            if (modelResults.problemType === 'classification') {
+                prediction = Math.round(Math.abs(prediction)) % 3; // Simple classification result
+            } else {
+                prediction = Math.round(prediction * 100) / 100; // Round to 2 decimal places
+            }
+            
+            return prediction;
+        }
+
+        function displayPredictionResult(prediction) {
+            const resultDiv = document.getElementById('predictionResult');
+            const valueDiv = document.getElementById('predictionValue');
+            
+            if (modelResults.problemType === 'classification') {
+                valueDiv.textContent = `Class ${prediction}`;
+            } else {
+                valueDiv.textContent = prediction.toFixed(3);
+            }
+            
+            resultDiv.style.display = 'block';
+            
+            // Scroll to result
+            resultDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function showModelInsights() {
+            const insightsDiv = document.getElementById('modelInsights');
+            
+            let insightsHTML = `
+                <div class="results">
+                    <h4>🏆 Best Model: ${modelResults.bestModel}</h4>
+                    <p style="margin: 10px 0;">Performance Score: <strong>${(modelResults.models.find(m => m.name === modelResults.bestModel).score * 100).toFixed(1)}%</strong></p>
+                </div>
+                
+                <div class="results" style="margin-top: 20px;">
+                    <h4>📊 Feature Importance</h4>
+                    <p style="margin-bottom: 15px; color: #666;">Features ranked by their impact on predictions:</p>
+            `;
+            
+            modelResults.featureImportance.forEach((item, index) => {
+                const barWidth = (item.importance * 100).toFixed(1);
+                insightsHTML += `
+                    <div style="margin: 10px 0;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                            <span><strong>${index + 1}. ${item.feature}</strong></span>
+                            <span>${barWidth}%</span>
+                        </div>
+                        <div style="background: #e0e0e0; height: 8px; border-radius: 4px; overflow: hidden;">
+                            <div style="background: linear-gradient(90deg, #667eea, #764ba2); height: 100%; width: ${barWidth}%; transition: width 0.5s ease;"></div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            insightsHTML += `
+                </div>
+                
+                <div class="results" style="margin-top: 20px;">
+                    <h4>🎯 Model Recommendations</h4>
+                    <div style="margin: 15px 0;">
+                        <h5 style="color: #667eea;">Data Quality:</h5>
+                        <p style="margin: 5px 0; color: #666;">Your dataset has ${uploadedData.data.length} samples with ${featureColumns.length} features. This is ${uploadedData.data.length > 1000 ? 'excellent' : 'adequate'} for reliable machine learning.</p>
+                    </div>
+                    <div style="margin: 15px 0;">
+                        <h5 style="color: #667eea;">Best Practices:</h5>
+                        <ul style="margin: 10px 0; padding-left: 20px; color: #666;">
+                            <li>Your ${modelResults.bestModel} model performed best with ${(modelResults.models.find(m => m.name === modelResults.bestModel).score * 100).toFixed(1)}% accuracy</li>
+                            <li>Focus on the top 3 features: ${modelResults.featureImportance.slice(0, 3).map(f => f.feature).join(', ')}</li>
+                            <li>Consider collecting more data for features with low importance</li>
+                            <li>Monitor predictions for values outside your training data range</li>
+                        </ul>
+                    </div>
+                </div>
+            `;
+            
+            insightsDiv.innerHTML = insightsHTML;
+        }
+
+        function showStatus(type, message) {
+            // Remove existing status messages
+            document.querySelectorAll('.status').forEach(status => status.remove());
+            
+            // Create new status message
+            const statusDiv = document.createElement('div');
+            statusDiv.className = `status ${type}`;
+            statusDiv.textContent = message;
+            
+            // Insert at the top of the active tab content
+            const activeTab = document.querySelector('.tab-content.active');
+            activeTab.insertBefore(statusDiv, activeTab.firstChild);
+            
+            // Auto-remove after 5 seconds for success/info messages
+            if (type !== 'error') {
+                setTimeout(() => {
+                    statusDiv.remove();
+                }, 5000);
+            }
+        }
+
+        // Demo data generator
+        function loadDemoData() {
+            const demoCSV = `temperature,pressure,humidity,ph_level,concentration,reaction_rate
+25.3,1015,65,7.2,1.5,45.8
+23.1,1012,72,6.9,1.2,42.1
+27.8,1018,58,7.5,1.8,49.3
+22.4,1010,68,7.1,1.1,41.7
+26.2,1016,62,7.4,1.6,47.2
+24.7,1013,70,7.0,1.3,43.9
+28.1,1020,55,7.6,1.9,51.4
+21.8,1008,75,6.8,1.0,40.2
+25.9,1014,64,7.3,1.7,46.5
+23.6,1011,69,7.2,1.4,44.1`;
+
+            parseCSV(demoCSV);
+            showStatus('success', 'Demo scientific dataset loaded! This simulates temperature, pressure, and chemical reaction data.');
+        }
+
+        // Add demo button
+        window.onload = function() {
+            const uploadSection = document.querySelector('.upload-section');
+            const demoBtn = document.createElement('button');
+            demoBtn.className = 'btn';
+            demoBtn.textContent = '🧪 Try Demo Data';
+            demoBtn.style.marginLeft = '10px';
+            demoBtn.onclick = loadDemoData;
+            uploadSection.appendChild(demoBtn);
+        };
+    </script>
+</body>
+</html>

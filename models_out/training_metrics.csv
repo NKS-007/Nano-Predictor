@@ -1,0 +1,10 @@
+target,r2,mae,n_samples,model_path
+Band_Gap_eV,0.9924778687485378,0.07307930782883508,264,models_out\model_Band_Gap_eV.joblib
+Quantum_Yield_%,0.9906316768078617,1.338454545454542,264,models_out\model_Quantum_Yield_%.joblib
+Electron_Mobility_cm2Vs,0.9994992360501178,13.745757575757576,264,models_out\model_Electron_Mobility_cm2Vs.joblib
+Hole_Mobility_cm2Vs,0.9995281370186916,1.3679797979797992,264,models_out\model_Hole_Mobility_cm2Vs.joblib
+Dielectric_Constant,-0.07579986593995036,2.476950951514721,264,models_out\model_Dielectric_Constant.joblib
+Emission_Peak_nm,0.11008004663036552,67.07769879423665,264,models_out\model_Emission_Peak_nm.joblib
+Radiative_Lifetime_ns,-0.10833147383306341,25.53632735350275,264,models_out\model_Radiative_Lifetime_ns.joblib
+Conductivity_Scm,-0.1732974242890708,0.002776783570201141,264,models_out\model_Conductivity_Scm.joblib
+Aspect_Ratio,-0.05094772456547303,0.31579890698155644,264,models_out\model_Aspect_Ratio.joblib

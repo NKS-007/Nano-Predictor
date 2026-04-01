@@ -1,0 +1,24 @@
+{
+  "models": {
+    "Band_Gap_eV": "models_out\\model_Band_Gap_eV.joblib",
+    "Quantum_Yield_%": "models_out\\model_Quantum_Yield_%.joblib",
+    "Electron_Mobility_cm2Vs": "models_out\\model_Electron_Mobility_cm2Vs.joblib",
+    "Hole_Mobility_cm2Vs": "models_out\\model_Hole_Mobility_cm2Vs.joblib",
+    "Dielectric_Constant": "models_out\\model_Dielectric_Constant.joblib",
+    "Emission_Peak_nm": "models_out\\model_Emission_Peak_nm.joblib",
+    "Radiative_Lifetime_ns": "models_out\\model_Radiative_Lifetime_ns.joblib",
+    "Conductivity_Scm": "models_out\\model_Conductivity_Scm.joblib",
+    "Aspect_Ratio": "models_out\\model_Aspect_Ratio.joblib"
+  },
+  "input_features": [
+    "Nanoparticle",
+    "Material_Type",
+    "Crystal_Structure",
+    "Temperature_K",
+    "Synthesis_Temperature_K",
+    "Precursor_Concentration_M",
+    "pH",
+    "Reaction_Time_h",
+    "Quantum_Confinement_Size_nm"
+  ]
+}
